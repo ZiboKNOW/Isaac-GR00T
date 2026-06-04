@@ -71,6 +71,8 @@ class DataConfig:
     shard_size: int = 2**10
     episode_sampling_rate: float = 0.1
     num_shards_per_epoch: int = int(1e5)
+    early_anchor_seconds: float = 3.0
+    early_anchor_weight: float = 5.0
 
     # Override statistics from the pretrained checkpoint
     override_pretraining_statistics: bool = True

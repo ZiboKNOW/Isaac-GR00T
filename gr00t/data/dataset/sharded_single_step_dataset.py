@@ -109,6 +109,8 @@ class ShardedSingleStepDataset(ShardedDataset):
         video_backend_kwargs: Additional arguments for video backend
         shard_size: Target number of timesteps per shard
         episode_sampling_rate: Fraction of episode timesteps to use (for efficiency)
+        early_anchor_seconds: Early episode window whose anchor timesteps are upweighted
+        early_anchor_weight: Sampling weight for anchor timesteps inside the early window
         seed: Random seed for reproducible sharding and sampling
         allow_padding: Whether to allow padding of indices to valid range [0, max_length - 1]
 
@@ -138,6 +140,8 @@ class ShardedSingleStepDataset(ShardedDataset):
         video_backend_kwargs: dict[str, Any] | None = None,
         shard_size: int = 2**10,  # 1024 steps
         episode_sampling_rate: float = 0.1,
+        early_anchor_seconds: float = 3.0,
+        early_anchor_weight: float = 5.0,
         seed: int = 42,
         allow_padding: bool = False,
     ):
@@ -149,6 +153,8 @@ class ShardedSingleStepDataset(ShardedDataset):
         self.video_backend_kwargs = video_backend_kwargs
         self.shard_size = shard_size
         self.episode_sampling_rate = episode_sampling_rate
+        self.early_anchor_seconds = early_anchor_seconds
+        self.early_anchor_weight = early_anchor_weight
         self.seed = seed
         self.allow_padding = allow_padding
         self.processor = None
@@ -201,8 +207,7 @@ class ShardedSingleStepDataset(ShardedDataset):
         # Distribute episode sub-sequences across shards
         for ep_idx in shuffled_episode_indices:
             # Split episode timesteps into multiple sub-sequences
-            step_indices = np.arange(0, self.get_effective_episode_length(ep_idx))
-            self.rng.shuffle(step_indices)
+            step_indices = self._get_weighted_step_indices(ep_idx)
             for i in range(num_splits):
                 split_step_indices = step_indices[i::num_splits]
                 # Assign to shard with minimum current length (greedy balancing)
@@ -221,6 +226,42 @@ class ShardedSingleStepDataset(ShardedDataset):
         )
         self.sharded_episodes = sharded_episodes
         self.shard_lengths = shard_lengths
+
+    def _get_weighted_step_indices(self, episode_index: int) -> np.ndarray:
+        """Sample anchor timesteps with extra probability near the start of an episode."""
+        effective_length = self.get_effective_episode_length(episode_index)
+        step_indices = np.arange(0, effective_length)
+        if (
+            effective_length == 0
+            or self.early_anchor_seconds <= 0
+            or self.early_anchor_weight <= 1
+        ):
+            self.rng.shuffle(step_indices)
+            return step_indices
+
+        early_mask = None
+        try:
+            episode_data = self.episode_loader._load_parquet_data(episode_index)
+            if "timestamp" in episode_data.columns:
+                timestamps = episode_data["timestamp"].iloc[:effective_length].to_numpy(
+                    dtype=np.float64
+                )
+                start_time = timestamps[0] if len(timestamps) > 0 else 0.0
+                early_mask = (timestamps - start_time) <= self.early_anchor_seconds
+        except Exception as exc:
+            print(
+                f"Warning: failed to load timestamps for episode {episode_index}; "
+                f"falling back to fps-based early sampling. Error: {exc}"
+            )
+
+        if early_mask is None:
+            early_steps = int(round(self.early_anchor_seconds * self.episode_loader.fps))
+            early_mask = step_indices < early_steps
+
+        weights = np.ones(effective_length, dtype=np.float64)
+        weights[early_mask] = self.early_anchor_weight
+        weights = weights / weights.sum()
+        return self.rng.choice(step_indices, size=effective_length, replace=True, p=weights)
 
     def get_effective_episode_length(self, episode_index: int) -> int:
         """Get the effective episode length accounting for action horizon."""

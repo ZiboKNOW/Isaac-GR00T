@@ -69,6 +69,8 @@ class DatasetFactory:
                     video_backend=self.config.data.video_backend,
                     shard_size=self.config.data.shard_size,
                     episode_sampling_rate=self.config.data.episode_sampling_rate,
+                    early_anchor_seconds=self.config.data.early_anchor_seconds,
+                    early_anchor_weight=self.config.data.early_anchor_weight,
                     seed=self.config.data.seed,
                     allow_padding=self.config.data.allow_padding,
                 )

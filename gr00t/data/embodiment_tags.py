@@ -43,6 +43,7 @@ class EmbodimentTag(Enum):
     - UNITREE_G1           -> "unitree_g1_full_body_with_waist_height_nav_cmd"
     - UNITREE_G1_SONIC     -> "unitree_g1_sonic"
     - UNITREE_G1_SONIC_INSPIRE     -> "unitree_g1_sonic_inspire"
+    - G1_SONIC_INSPIRE_WRIST       -> "g1_sonic_inspire_wrist"
     - SIMPLER_ENV_GOOGLE   -> "simpler_env_google"
     - SIMPLER_ENV_WIDOWX   -> "simpler_env_widowx"
     - LIBERO_PANDA         -> "libero_sim"
@@ -111,6 +112,11 @@ class EmbodimentTag(Enum):
     UNITREE_G1_SONIC_INSPIRE = "unitree_g1_sonic_inspire"
     """
     The Unitree G1 robot with SONIC whole-body controller. VLA action space is SONIC latents.
+    """
+
+    G1_SONIC_INSPIRE_WRIST = "g1_sonic_inspire_wrist"
+    """
+    The G1 SONIC Inspire embodiment with ego and dual wrist camera inputs.
     """
 
     SIMPLER_ENV_GOOGLE = "simpler_env_google"
@@ -200,6 +206,7 @@ POSTTRAIN_TAGS: frozenset[EmbodimentTag] = frozenset(
         EmbodimentTag.UNITREE_G1,
         EmbodimentTag.UNITREE_G1_SONIC,
         EmbodimentTag.UNITREE_G1_SONIC_INSPIRE,
+        EmbodimentTag.G1_SONIC_INSPIRE_WRIST,
         EmbodimentTag.SIMPLER_ENV_GOOGLE,
         EmbodimentTag.SIMPLER_ENV_WIDOWX,
         EmbodimentTag.LIBERO_PANDA,

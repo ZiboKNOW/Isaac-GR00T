@@ -151,6 +151,12 @@ class FinetuneConfig:
     episode_sampling_rate: float = 0.1
     """Sampling rate for the episodes."""
 
+    early_anchor_seconds: float = 3.0
+    """Episode prefix duration whose anchor timesteps are oversampled during training."""
+
+    early_anchor_weight: float = 5.0
+    """Sampling weight for anchor timesteps inside early_anchor_seconds."""
+
     num_shards_per_epoch: int = int(1e5)
     """Number of shards to use for the dataset. reduce this number if vram is limited."""
 

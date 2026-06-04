@@ -110,6 +110,8 @@ if __name__ == "__main__":
 
     config.data.shard_size = ft_config.shard_size
     config.data.episode_sampling_rate = ft_config.episode_sampling_rate
+    config.data.early_anchor_seconds = ft_config.early_anchor_seconds
+    config.data.early_anchor_weight = ft_config.early_anchor_weight
     config.data.num_shards_per_epoch = ft_config.num_shards_per_epoch
 
     config.training.save_only_model = ft_config.save_only_model

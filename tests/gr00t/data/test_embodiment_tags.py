@@ -131,6 +131,9 @@ class TestTagCategories:
     def test_new_embodiment_is_finetune_only(self):
         assert EmbodimentTag.NEW_EMBODIMENT in FINETUNE_ONLY_TAGS
 
+    def test_g1_sonic_inspire_wrist_is_posttrain(self):
+        assert EmbodimentTag.G1_SONIC_INSPIRE_WRIST in POSTTRAIN_TAGS
+
     def test_pretrain_tags_match_base_model(self):
         """Pretrain tags should match what's in the base model checkpoint."""
         expected_values = {
@@ -217,3 +220,14 @@ class TestEmbodimentTagConsistency:
                 f"EmbodimentTag.{tag.name} ('{tag.value}') is a posttrain tag "
                 f"but missing from MODALITY_CONFIGS"
             )
+
+    def test_g1_sonic_inspire_wrist_extends_inspire_with_wrist_cameras(self):
+        base_config = MODALITY_CONFIGS[EmbodimentTag.UNITREE_G1_SONIC_INSPIRE.value]
+        wrist_config = MODALITY_CONFIGS[EmbodimentTag.G1_SONIC_INSPIRE_WRIST.value]
+
+        assert wrist_config["video"].modality_keys == ["ego_view", "left_wrist", "right_wrist"]
+        assert wrist_config["video"].delta_indices == base_config["video"].delta_indices
+        assert wrist_config["state"].modality_keys == base_config["state"].modality_keys
+        assert wrist_config["action"].modality_keys == base_config["action"].modality_keys
+        assert wrist_config["action"].delta_indices == base_config["action"].delta_indices
+        assert wrist_config["language"].modality_keys == base_config["language"].modality_keys
