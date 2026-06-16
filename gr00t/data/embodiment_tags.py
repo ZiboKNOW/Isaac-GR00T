@@ -42,6 +42,8 @@ class EmbodimentTag(Enum):
     Pre-registered posttrain tags (require finetuned checkpoint):
     - UNITREE_G1           -> "unitree_g1_full_body_with_waist_height_nav_cmd"
     - UNITREE_G1_SONIC     -> "unitree_g1_sonic"
+    - UNITREE_G1_SONIC_NO_HAND     -> "unitree_g1_sonic_no_hand"
+    - UNITREE_G1_SONIC_NO_HAND_WO_WRIST -> "unitree_g1_sonic_no_hand_wo_wrist"
     - UNITREE_G1_SONIC_INSPIRE     -> "unitree_g1_sonic_inspire"
     - G1_SONIC_INSPIRE_WRIST       -> "g1_sonic_inspire_wrist"
     - SIMPLER_ENV_GOOGLE   -> "simpler_env_google"
@@ -108,7 +110,17 @@ class EmbodimentTag(Enum):
     """
     The Unitree G1 robot with SONIC whole-body controller. VLA action space is SONIC latents.
     """
-    
+
+    UNITREE_G1_SONIC_NO_HAND = "unitree_g1_sonic_no_hand"
+    """
+    The Unitree G1 robot with SONIC whole-body controller, wrist cameras, and no hand state/action.
+    """
+
+    UNITREE_G1_SONIC_NO_HAND_WO_WRIST = "unitree_g1_sonic_no_hand_wo_wrist"
+    """
+    The Unitree G1 robot with SONIC whole-body controller, no wrist cameras, and no hand state/action.
+    """
+
     UNITREE_G1_SONIC_INSPIRE = "unitree_g1_sonic_inspire"
     """
     The Unitree G1 robot with SONIC whole-body controller. VLA action space is SONIC latents.
@@ -205,6 +217,8 @@ POSTTRAIN_TAGS: frozenset[EmbodimentTag] = frozenset(
     {
         EmbodimentTag.UNITREE_G1,
         EmbodimentTag.UNITREE_G1_SONIC,
+        EmbodimentTag.UNITREE_G1_SONIC_NO_HAND,
+        EmbodimentTag.UNITREE_G1_SONIC_NO_HAND_WO_WRIST,
         EmbodimentTag.UNITREE_G1_SONIC_INSPIRE,
         EmbodimentTag.G1_SONIC_INSPIRE_WRIST,
         EmbodimentTag.SIMPLER_ENV_GOOGLE,

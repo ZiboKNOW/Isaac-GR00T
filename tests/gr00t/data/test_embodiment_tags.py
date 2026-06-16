@@ -231,3 +231,37 @@ class TestEmbodimentTagConsistency:
         assert wrist_config["action"].modality_keys == base_config["action"].modality_keys
         assert wrist_config["action"].delta_indices == base_config["action"].delta_indices
         assert wrist_config["language"].modality_keys == base_config["language"].modality_keys
+
+    def test_unitree_g1_sonic_no_hand_uses_wrist_cameras_without_hand_modalities(self):
+        no_hand_tag = EmbodimentTag.UNITREE_G1_SONIC_NO_HAND.value
+        no_hand_config = MODALITY_CONFIGS[no_hand_tag]
+
+        assert EMBODIMENT_TAG_TO_PROJECTOR_INDEX[no_hand_tag] == EMBODIMENT_TAG_TO_PROJECTOR_INDEX[
+            EmbodimentTag.UNITREE_G1_SONIC.value
+        ]
+        assert no_hand_config["video"].modality_keys == ["ego_view", "left_wrist", "right_wrist"]
+        assert no_hand_config["state"].modality_keys == [
+            "left_leg",
+            "right_leg",
+            "waist",
+            "left_arm",
+            "right_arm",
+            "projected_gravity",
+        ]
+        assert no_hand_config["action"].modality_keys == ["motion_token"]
+
+    def test_unitree_g1_sonic_no_hand_wo_wrist_removes_only_wrist_cameras(self):
+        base_tag = EmbodimentTag.UNITREE_G1_SONIC_NO_HAND.value
+        wo_wrist_tag = EmbodimentTag.UNITREE_G1_SONIC_NO_HAND_WO_WRIST.value
+        base_config = MODALITY_CONFIGS[base_tag]
+        wo_wrist_config = MODALITY_CONFIGS[wo_wrist_tag]
+
+        assert EMBODIMENT_TAG_TO_PROJECTOR_INDEX[wo_wrist_tag] == EMBODIMENT_TAG_TO_PROJECTOR_INDEX[
+            base_tag
+        ]
+        assert wo_wrist_config["video"].modality_keys == ["ego_view"]
+        assert wo_wrist_config["video"].delta_indices == base_config["video"].delta_indices
+        assert wo_wrist_config["state"].modality_keys == base_config["state"].modality_keys
+        assert wo_wrist_config["action"].modality_keys == base_config["action"].modality_keys
+        assert wo_wrist_config["action"].delta_indices == base_config["action"].delta_indices
+        assert wo_wrist_config["language"].modality_keys == base_config["language"].modality_keys

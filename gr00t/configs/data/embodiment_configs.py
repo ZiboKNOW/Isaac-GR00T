@@ -112,6 +112,74 @@ MODALITY_CONFIGS = {
             modality_keys=["annotation.human.task_description"],
         ),
     },
+    "unitree_g1_sonic_no_hand": {
+        "video": ModalityConfig(
+            delta_indices=[0],
+            modality_keys=["ego_view", "left_wrist", "right_wrist"],
+        ),
+        "state": ModalityConfig(
+            delta_indices=[0],
+            modality_keys=[
+                "left_leg",
+                "right_leg",
+                "waist",
+                "left_arm",
+                "right_arm",
+                "projected_gravity",
+            ],
+        ),
+        "action": ModalityConfig(
+            delta_indices=list(range(40)),
+            modality_keys=[
+                "motion_token",
+            ],
+            action_configs=[
+                ActionConfig(
+                    rep=ActionRepresentation.ABSOLUTE,
+                    type=ActionType.NON_EEF,
+                    format=ActionFormat.DEFAULT,
+                ),
+            ],
+        ),
+        "language": ModalityConfig(
+            delta_indices=[0],
+            modality_keys=["annotation.human.task_description"],
+        ),
+    },
+    "unitree_g1_sonic_no_hand_wo_wrist": {
+        "video": ModalityConfig(
+            delta_indices=[0],
+            modality_keys=["ego_view"],
+        ),
+        "state": ModalityConfig(
+            delta_indices=[0],
+            modality_keys=[
+                "left_leg",
+                "right_leg",
+                "waist",
+                "left_arm",
+                "right_arm",
+                "projected_gravity",
+            ],
+        ),
+        "action": ModalityConfig(
+            delta_indices=list(range(40)),
+            modality_keys=[
+                "motion_token",
+            ],
+            action_configs=[
+                ActionConfig(
+                    rep=ActionRepresentation.ABSOLUTE,
+                    type=ActionType.NON_EEF,
+                    format=ActionFormat.DEFAULT,
+                ),
+            ],
+        ),
+        "language": ModalityConfig(
+            delta_indices=[0],
+            modality_keys=["annotation.human.task_description"],
+        ),
+    },
     "unitree_g1_sonic_inspire": {
         "video": ModalityConfig(
             delta_indices=[0],
