@@ -47,9 +47,10 @@ class EmbodimentTag(Enum):
     - LIBERO_PANDA         -> "libero_sim"
 
     Finetuning tag (for custom robots):
-    - NEW_EMBODIMENT        -> "new_embodiment"
-    - ROBOCASA_PANDA_OMRON  -> "robocasa_panda_omron"
-    - ROBOCASA_GR1_TABLETOP -> "robocasa_gr1_tabletop"
+    - NEW_EMBODIMENT              -> "new_embodiment"
+    - UNITREE_G1_SONIC_BRAINCO    -> "unitree_g1_sonic_brainco"
+    - ROBOCASA_PANDA_OMRON        -> "robocasa_panda_omron"
+    - ROBOCASA_GR1_TABLETOP       -> "robocasa_gr1_tabletop"
 
     Use ``EmbodimentTag.resolve(s)`` to look up a tag by name or value,
     case-insensitively.
@@ -107,6 +108,11 @@ class EmbodimentTag(Enum):
     UNITREE_G1_SONIC = "unitree_g1_sonic"
     """
     The Unitree G1 robot with SONIC whole-body controller. VLA action space is SONIC latents.
+    """
+
+    UNITREE_G1_SONIC_BRAINCO = "unitree_g1_sonic_brainco"
+    """
+    Unitree G1 + SONIC latents with BrainCo 6-DoF hands (Dex3 SONIC is 7-DoF per hand).
     """
 
     SIMPLER_ENV_GOOGLE = "simpler_env_google"
@@ -217,6 +223,7 @@ POSTTRAIN_TAGS: frozenset[EmbodimentTag] = frozenset(
 FINETUNE_ONLY_TAGS: frozenset[EmbodimentTag] = frozenset(
     {
         EmbodimentTag.NEW_EMBODIMENT,
+        EmbodimentTag.UNITREE_G1_SONIC_BRAINCO,
         EmbodimentTag.ROBOCASA_PANDA_OMRON,
         EmbodimentTag.ROBOCASA_GR1_TABLETOP,
     }
